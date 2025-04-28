@@ -6,3 +6,4 @@ werkzeug.utils
 googletrans
 easyocr
 speech_recognition
+gunicorn
