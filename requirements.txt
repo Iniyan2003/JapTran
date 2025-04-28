@@ -6,3 +6,4 @@ easyocr
 SpeechRecognition
 Werkzeug
 eventlet
+gunicorn
