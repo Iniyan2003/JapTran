@@ -1,0 +1,83 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    margin-bottom: 50px;
+}
+
+h2 {
+    color: #2c3e50;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+.messages-container {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    height: 300px;
+    overflow-y: scroll;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+    max-width: 600px;
+}
+
+input[type="text"], input[type="password"], select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+input#messageInput {
+    width: 80%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Translation Section */
+.translation-section {
+    margin-top: 30px;
+}
+
+.section {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+}
+
+.result-text {
+    margin-top: 10px;
+    font-size: 1.1em;
+    color: #2980b9;
+}

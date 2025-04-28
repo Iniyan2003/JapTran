@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat & Translation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome, {{ username }}!</h2>
+        <button onclick="window.location.href='{{ url_for('logout') }}';">Logout</button>
+        <div id="messages" class="messages-container"></div>
+        <input id="messageInput" autocomplete="off" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <div class="translation-section">
+        <!-- Text to Text Section -->
+        <div class="section">
+            <h2>📝 Text to Text</h2>
+            <select id="textFromLang">
+                <option value="en">English</option>
+                <option value="ja">Japanese</noption>
+            </select><br><br>
+            <textarea id="textInput" placeholder="Type something..."></textarea><br>
+            <button onclick="translateText()">Translate</button>
+            <span id="translatedText" class="result-text"></span>
+        </div>
+
+        <!-- Audio to Text Section -->
+        <div class="section">
+            <h2>🎤 Audio to Text</h2>
+            <select id="audioFromLang">
+                <option value="en">English</option>
+                <option value="ja">Japanese</option>
+            </select><br><br>
+            <button onclick="startListening()">Start Speaking</button>
+            <p><strong>Recognized Sentence:</strong> <span id="spokenText"></span></p>
+            <p><strong>Translated:</strong> <span id="spokenTranslated"></span></p>
+        </div>
+
+        <!-- Handwritten to Text Section -->
+        <div class="section">
+            <h2>✍️ Handwritten to Text</h2>
+            <select id="handwrittenFromLang">
+                <option value="en">English</option>
+                <option value="ja">Japanese</option>
+            </select><br><br>
+            <input type="file" id="imageInput" accept="image/*"><br>
+            <button onclick="uploadImage()">Recognize</button><br>
+            <textarea id="handwrittenOutput" placeholder="Recognized text will appear here..."></textarea><br>
+            <button onclick="translateHandwritten()">Translate</button>
+            <span id="handwrittenTranslated" class="result-text"></span>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        const username = "{{ username }}";
+        const userLang = "{{ language }}";
+
+        // Join the room for this user
+        socket.emit('join', { username: username });
+
+        function sendMessage() {
+            const message = document.getElementById("messageInput").value;
+            socket.emit('send_message', { username: username, message: message });
+            document.getElementById("messageInput").value = "";
+        }
+
+        socket.on('receive_message', function(data) {
+            const msgDiv = document.getElementById("messages");
+            const newMsg = document.createElement("div");
+            newMsg.textContent = data.username + ": " + data.message;
+            msgDiv.appendChild(newMsg);
+            msgDiv.scrollTop = msgDiv.scrollHeight;
+        });
+
+        function translateText() {
+            const textInput = document.getElementById("textInput").value;
+            const fromLang  = document.getElementById("textFromLang").value;
+
+            fetch("/translate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    text:        textInput,
+                    source_lang: fromLang
+                }),
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("translatedText").textContent = data.translated;
+            })
+            .catch(console.error);
+        }
+
+        function startListening() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("Your browser does not support speech recognition. Please use Google Chrome.");
+                return;
+            }
+
+            const recognition = new webkitSpeechRecognition();
+            const fromLang = document.getElementById("audioFromLang").value;
+
+            recognition.lang = fromLang === 'ja' ? 'ja-JP' : 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = function () {
+                console.log("Speech recognition started...");
+            };
+
+            recognition.onerror = function (event) {
+                console.error("Speech recognition error:", event.error);
+            };
+
+            recognition.onresult = function (event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById("spokenText").textContent = transcript;
+
+                fetch("/translate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text: transcript, source_lang: fromLang }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("spokenTranslated").textContent = data.translated;
+                })
+                .catch(error => console.error("Translation error:", error));
+            };
+
+            recognition.start();
+        }
+
+        function translateHandwritten() {
+            const handwrittenText = document.getElementById("handwrittenOutput").value;
+            const fromLang = document.getElementById("handwrittenFromLang").value;
+
+            fetch("/translate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: handwrittenText, source_lang: fromLang }),
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("handwrittenTranslated").textContent = data.translated;
+            })
+            .catch(console.error);
+        }
+
+        function uploadImage() {
+    const fileInput = document.getElementById("imageInput");
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert("Please select an image first!");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    fetch("/upload-handwritten", {
+        method: "POST",
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.recognized_text) {
+            document.getElementById("handwrittenOutput").value = data.recognized_text;
+        } else {
+            alert("No text recognized!");
+        }
+    })
+    .catch(error => console.error("Error uploading image:", error));
+}
+    </script>
+</body>
+</html>
