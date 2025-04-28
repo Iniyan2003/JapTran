@@ -1,9 +1,8 @@
-flask
-flask_socketio
-flask_sqlalchemy
-werkzeug.security
-werkzeug.utils
-googletrans
+Flask
+Flask-SocketIO
+Flask-SQLAlchemy
+googletrans==4.0.0rc1
 easyocr
-speech_recognition
-gunicorn
+SpeechRecognition
+Werkzeug
+eventlet
