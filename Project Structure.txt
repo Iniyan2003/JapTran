@@ -1,0 +1,11 @@
+JapTran/
+├── app.py
+├── chat.db (auto-created)
+├── templates/
+│   ├── chat.html
+│   ├── login.html
+│   └── register.html
+├── static/
+│   └── style.css
+├── uploads/
+└── requirements.txt
