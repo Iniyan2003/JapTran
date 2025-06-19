@@ -142,3 +142,4 @@ JapTran/
 - [SpeechRecognition](https://pypi.org/project/SpeechRecognition/) — Audio input processing
 - [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API) — Browser-based voice recognition
 
+
