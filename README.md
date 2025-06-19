@@ -79,18 +79,20 @@ You can copy this directly into your `README.md` file under the **Installation &
 
 ## 📁 Project Structure
 
+```text
 JapTran/
-├── app.py # Main Flask backend
-├── requirements.txt # Python dependencies
-├── templates/ # HTML templates
-│ ├── chat.html
-│ ├── login.html
-│ └── register.html
+├── app.py                  # Main Flask backend
+├── requirements.txt        # Python dependencies
+├── templates/              # HTML templates
+│   ├── chat.html
+│   ├── login.html
+│   └── register.html
 ├── static/
-│ └── style.css # CSS styles
-├── uploads/ # Uploaded handwritten images
-├── JapTran_Workflow.png # Project flowchart diagram (optional)
+│   └── style.css           # CSS styles
+├── uploads/                # Uploaded handwritten images
+├── JapTran_Workflow.png    # Project flowchart diagram (optional)
 └── README.md
+
 
 ## 👥 User Guide
 
